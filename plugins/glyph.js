@@ -36,6 +36,23 @@ function getSubsetGlyfs(ttf, subset) {
 
     glyphs.unshift(ttf.get().glyf[0]);
 
+    glyphs = glyphs.filter((g) => {
+        if (!g.unicode)
+            return true;
+        if (g.unicode.length === 1)
+            return true;
+
+        const hasSpaceUnicode = g.unicode.indexOf(32) !== -1;
+        const hasNonBreakingSpaceUnicode = g.unicode.indexOf(160) !== -1;
+
+        if (g.unicode.length > 1 && hasSpaceUnicode && hasNonBreakingSpaceUnicode) // if both there, return glyph
+            return true;
+        if (g.unicode.length > 1 && !hasSpaceUnicode && !hasNonBreakingSpaceUnicode) // if they are both not there, return glyph
+            return true;
+
+        return false;
+    });
+
     return glyphs;
 }
 
